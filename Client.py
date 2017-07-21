@@ -6,8 +6,8 @@
 # Copyright 2012 Minsu Kang
 # Copyright 2013 Jioh L. Jung
 
-from urllib import quote
-from urllib2 import urlopen, Request, HTTPError
+from urllib.parse import quote
+from urllib.request import urlopen, Request, HTTPError
 from base64 import b64encode
 
 import hmac
@@ -69,17 +69,17 @@ class Client(object):
             '='.join([k, quote(args[k])]) for k in sorted(args.keys(), key=str.lower))
         
         signature = b64encode(hmac.new(
-                self.secret,
-                msg=query.lower(),
+                self.secret.encode('utf-8'),
+                msg=query.lower().encode('utf-8'),
                 digestmod=hashlib.sha1
         ).digest())
 
         if debug:
-            print "Server: '%s'" % (self.api_url)
-            print "Query (for Signiture):"
-            print query
-            print "Sigature:"
-            print signature
+            print("Server: '%s'" % (self.api_url))
+            print("Query (for Signiture):")
+            print(query)
+            print("Sigature:")
+            print(signature)
 
         #-------------------------------------------------------
         # reconstruct : command + params + api_key + signature
@@ -97,8 +97,8 @@ class Client(object):
         query += '&signature=' + quote(signature)
 
         if debug:
-            print "Query (Reconstructed/LEN: %d):" % len(query)
-            print query
+            print("Query (Reconstructed/LEN: %d):" % len(query))
+            print(query)
         #-------------------------------------------------------
 
         urls = self.api_url + '?' + query
@@ -108,9 +108,9 @@ class Client(object):
             req_data = Request(urls, post_enc)
             req_data.add_header('Content-type', 'application/x-www-form-urlencoded')
             if debug:
-                print "POST(DICT/LEN: %d): " % (len(post)) , post
-                print "POST(Encrypted/LEN: %d): " % (len(post_enc)) , post_enc
-                print "HEADERS: ", req_data.headers
+                print("POST(DICT/LEN: %d): " % (len(post)) , post)
+                print("POST(Encrypted/LEN: %d): " % (len(post_enc)) , post_enc)
+                print("HEADERS: ", req_data.headers)
         else:
             req_data = Request(urls)
 
@@ -118,7 +118,7 @@ class Client(object):
             response = urlopen(req_data)
         except HTTPError as e:
             # Printing Debugging Indformation.
-            print e.read()
+            print(e.read())
             raise RuntimeError("%s" % e)
 
         content = response.read()
@@ -150,11 +150,11 @@ if __name__=="__main__":
     import sys
 
     if len(sys.argv) != 2:
-        print "usage: python Client.py command"
+        print("usage: python Client.py command")
         exit(-1)
 
     command = sys.argv[1]
     client  = Client()
     result  = client.request(command)
 
-    print json.dumps(result, sort_keys=True, indent=4)
+    print(json.dumps(result, sort_keys=True, indent=4))

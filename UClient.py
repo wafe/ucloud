@@ -20,11 +20,11 @@ class UClient(Client):
         if __name__ == '__main__':
 
             if (command == 'listVirtualMachines'):
-                print "%-36s %-36s %-36s %-36s %-15s %-10s %s" % (
+                print("%-36s %-36s %-36s %-36s %-15s %-10s %s" % (
                     "ID", "ZONE ID", "TEMPLATE ID", "SERVICE OFFERING ID", "IP", "STATE", "NAME", 
-                )
+                ))
                 for idx, vm in enumerate(response['virtualmachine']):
-                    print "%36s %36s %36s %36s %-15s %-10s %s" % (
+                    print("%36s %36s %36s %36s %-15s %-10s %s" % (
                         vm.get('id', ''),
                         vm.get('zoneid', ''),
                         vm.get('templateid', ''),
@@ -32,44 +32,44 @@ class UClient(Client):
                         vm["nic"][0].get("ipaddress", ""),
                         vm.get('state', ''),
                         vm.get('displayname', '')
-                    )
+                    ))
                 exit(0)
 
             if (command == 'listPortForwardingRules'):
-                print "%-36s %-36s %-36s %6s %7s %s" % (
+                print("%-36s %-36s %-36s %6s %7s %s" % (
                     "RULE ID", "IP ID", "VM ID", "PUBLIC", "PRIVATE", "VM"
-                )
+                ))
                 for idx, rule in enumerate(response['portforwardingrule']):
-                    print "%36s %36s %36s %6s %7s %s" % (
+                    print("%36s %36s %36s %6s %7s %s" % (
                         rule.get('id', ''),
                         rule.get('ipaddressid', ''),
                         rule.get('virtualmachineid', ''),
                         rule.get('publicport', ''),
                         rule.get('privateport', ''),
                         rule.get('virtualmachinedisplayname', '')
-                    )
+                    ))
                 exit(0)
 
             if (command == 'listPublicIpAddresses'):
-                print "%-15s %-36s %s" % (
+                print("%-15s %-36s %s" % (
                     "IP", "ID", "ZONE"
-                )
+                ))
                 for idx, rule in enumerate(response['publicipaddress']):
-                    print "%-15s %36s %s" % (
+                    print("%-15s %36s %s" % (
                         rule.get('ipaddress'),
                         rule.get('id'),
                         rule.get('zonename')
-                    )
+                    ))
                 exit(0)
 
-            print json.dumps(response, indent=2)
+            print(json.dumps(response, indent=2))
         return response
 
 """ Command Line Interface """
 
 def usage_out():
-    print "usage: python UClient.py api_type command args"
-    print "         api_type : server or lb(loadbalancer) or waf or watch or package"
+    print("usage: python UClient.py api_type command args")
+    print("         api_type : server or lb(loadbalancer) or waf or watch or package")
 
 if __name__ == "__main__":
     import sys
@@ -105,7 +105,7 @@ if __name__ == "__main__":
         params.update(args)
 
         if not set(command["required"]).issubset(params):
-            print command["required"]
+            print(command["required"])
             raise RuntimeError('required parameters missing')
 
         client.run(command['name'], params, resptype=UCLOUD_RESP_TYPE)
